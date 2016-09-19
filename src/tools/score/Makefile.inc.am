@@ -1,0 +1,58 @@
+##
+## This file is part of the Score-P software (http://www.score-p.org)
+##
+## Copyright (c) 2012-2013,
+## German Research School for Simulation Sciences GmbH, Juelich/Aachen, Germany
+##
+## Copyright (c) 2012-2015,
+## Forschungszentrum Juelich GmbH, Germany
+##
+## Copyright (c) 2012,
+## Technische Universitaet Dresden, Germany
+##
+## This software may be modified and distributed under the terms of
+## a BSD-style license.  See the COPYING file in the package base
+## directory for details.
+##
+
+if HAVE_SCOREP_SCORE
+
+bin_PROGRAMS += scorep-score
+
+scorep_score_SOURCES = \
+    $(SRC_ROOT)src/tools/score/scorep_score.cpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Estimator.cpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Estimator.hpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Event.cpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Event.hpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_EventList.hpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Group.cpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Group.hpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Profile.cpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Profile.hpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Types.cpp \
+    $(SRC_ROOT)src/tools/score/SCOREP_Score_Types.hpp
+
+scorep_score_CPPFLAGS = \
+    $(AM_CPPFLAGS) \
+    $(UTILS_CPPFLAGS) \
+    @CUBE_READER_CPPFLAGS@ \
+    -I$(INC_ROOT)src/utils/include
+
+scorep_score_LDFLAGS = @CUBE_READER_LDFLAGS@
+scorep_score_LDADD = @CUBE_READER_LIBS@ \
+    libscorep_filter.la \
+    libutils.la
+scorep_score_DEPENDENCIES = \
+    libscorep_filter.la \
+    libutils.la
+
+if !HAVE_SCOREP_EXTERNAL_CUBE
+
+scorep_score_DEPENDENCIES += @CUBE_READER_LIBS@
+@CUBE_READER_LIBS@:
+	@$(am__cd) `dirname $@` && $(MAKE) $(AM_MAKEFLAGS) `basename $@`
+
+endif !HAVE_SCOREP_EXTERNAL_CUBE
+
+endif HAVE_SCOREP_SCORE
